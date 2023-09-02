@@ -1,0 +1,22 @@
+{
+    "name": "wetube",
+    "version": "1.0.0",
+    "description": "The best way to watch videos",
+    "main": "index.js",
+    "scripts": {
+      "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "repository": {
+      "type": "git",
+      "url": "git+https://github.com/yoseph0524/wetube-.git"
+    },
+    "keywords": [
+      "wetube"
+    ],
+    "author": "Yoseph",
+    "license": "MIT",
+    "bugs": {
+      "url": "https://github.com/yoseph0524/wetube-/issues"
+    },
+    "homepage": "https://github.com/yoseph0524/wetube-"
+  }
