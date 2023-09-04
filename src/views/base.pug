@@ -6,5 +6,9 @@ html(lang="en")
     body 
         header
             h1=pageTitle 
-        block content
-        include partials/footer
+            nav 
+                ul 
+                    li 
+                        a(href="/videos/upload") Upload Video 
+            block content
+    include partials/footer
