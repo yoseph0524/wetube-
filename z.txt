@@ -1,0 +1,57 @@
+      hashtags: hasttags ? hashtags
+        .split(",")
+        .map((word) => (word.startsWith("#") ? word : `#${word}`)) : [],
+
+postEdit
+        const {
+        session: {
+            user: { _id, avatarUrl, email: sessionEmail, username: sessionUsername },
+        },
+        body: { name, email, username, location },
+        file
+    } = req;
+    let searchParam = [];
+    if (sessionEmail !== email) {
+        searchParam.push({ email });
+    }
+    if (sessionUsername !== username) {
+        searchParam.push({ username });
+    }
+    if (searchParam.length > 0) {
+        const foundUser = await User.findOne({ $or: searchParam });
+        if (foundUser && foundUser._id.toString() !== _id) {
+            return res.status(HTTP_BAD_REQUEST).render("edit-profile", {
+                pageTitle: "Edit Profile",
+                errorMessage: "This username/email is already taken.",
+            });
+        }
+    }
+
+    export const postChangePassword = async (req, res) => {
+  const {
+    session: {
+      user: { _id, password },
+    },
+    body: { oldPassword, newPassword, newPasswordComfirmation },
+  } = req;
+  const ok = await bcrypt.compare(oldPassword, password);
+  if (!ok) {
+    return res.status(400).render("users/change-password", {
+      pageTitle: "Change Password",
+      errorMessage: "The current password is incorrect",
+    });
+  }
+
+  if (newPassword !== newPasswordComfirmation) {
+    return res.status(400).render("users/change-password", {
+      pageTitle: "Change Password",
+      errorMessage: "The password does not match the confirmation",
+    });
+  }
+  const user = await User.findById(_id);
+  user.password = newPassword;
+  user.save();
+  req.session.user.password = user.password;
+  // send notification
+  return res.redirect("/users/logout");
+};

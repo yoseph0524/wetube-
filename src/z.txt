@@ -1,3 +1,0 @@
-      hashtags: hasttags ? hashtags
-        .split(",")
-        .map((word) => (word.startsWith("#") ? word : `#${word}`)) : [],
