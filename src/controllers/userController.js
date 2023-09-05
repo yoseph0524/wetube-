@@ -1,5 +1,6 @@
 import User from "../models/User";
 import bcrypt from "bcrypt";
+import Video from "../models/Video";
 
 export const getJoin = (req, res) => res.render("join", { pageTitle: "Join" });
 export const postJoin = async (req, res) => {
@@ -197,4 +198,16 @@ export const postChangePassword = async (req, res) => {
   return res.redirect("/users/logout");
 };
 
-export const see = (req, res) => res.send("See User");
+export const see = async (req, res) => {
+  const { id } = req.params;
+  const user = await User.findById(id);
+  const videos = await Video.find({ owner: user._id });
+  if (!user) {
+    return res.status(404).render("404", { pageTitle: "404" });
+  }
+  return res.render("users/profile", {
+    pageTitle: `${user.name}'s Profile`,
+    user,
+    videos,
+  });
+};
