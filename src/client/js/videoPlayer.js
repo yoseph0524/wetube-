@@ -6,8 +6,13 @@ const volumeRange = document.getElementById("volume");
 const currentTime = document.getElementById("currentTime");
 const totalTime = document.getElementById("totalTime");
 const timeline = document.getElementById("timeline");
+const fullScreenBtn = document.getElementById("fullScreen");
+const videoContainer = document.getElementById("videoContainer");
+const videoControls = document.getElementById("videoControls");
 
 let volumeValue = 0.5;
+let controlsTimeout = null;
+let controlMovementTimeout = null;
 video.volume = volumeValue;
 
 const handlePlayClick = (e) => {
@@ -62,6 +67,36 @@ const handleTimelineChange = (event) => {
   video.currentTime = value;
 };
 
+const handleFullScreen = () => {
+  const fullscreen = document.fullscreenElement;
+  if (fullscreen) {
+    document.exitFullscreen;
+    fullScreenBtn.innerText = "Enter Full Screen";
+  } else {
+    videoContainer.requestFullscreen();
+    fullScreenBtn.innerText = "Exit Full Screen";
+  }
+};
+
+const hideControls = () => videoControls.classList.remove("showing");
+
+const handleMouseMove = () => {
+  if (controlsTimeout) {
+    clearTimeout(controlsTimeout);
+    controlsTimeout = null;
+  }
+  if (controlMovementTimeout) {
+    clearTimeout(controlMovementTimeout);
+    controlMovementTimeout = null;
+  }
+  videoControls.classList.add("showing");
+  controlMovementTimeout = setTimeout(hideControls, 3000);
+};
+
+const handleMouseLeave = () => {
+  controlsTimeout = setTimeout(hideControls, 3000);
+};
+
 playBtn.addEventListener("click", handlePlayClick);
 muteBtn.addEventListener("click", handleMuteClick);
 volumeRange.addEventListener("input", handleVolumeChange);
@@ -70,3 +105,6 @@ video.readyState
   : video.addEventListener("loadedmetadata", handleLoadedMetaData);
 video.addEventListener("timeupdate", handleTimeUpdate);
 timeline.addEventListener("input", handleTimelineChange);
+fullScreenBtn.addEventListener("click", handleFullScreen);
+video.addEventListener("mousemove", handleMouseMove);
+video.addEventListener("mouseleave", handleMouseLeave);
