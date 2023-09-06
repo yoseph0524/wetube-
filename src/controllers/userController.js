@@ -1,6 +1,5 @@
 import User from "../models/User";
 import bcrypt from "bcrypt";
-import Video from "../models/Video";
 
 export const getJoin = (req, res) => res.render("join", { pageTitle: "Join" });
 export const postJoin = async (req, res) => {
@@ -172,36 +171,38 @@ export const getChangePassword = (req, res) => {
 export const postChangePassword = async (req, res) => {
   const {
     session: {
-      user: { _id, password },
+      user: { _id },
     },
-    body: { oldPassword, newPassword, newPasswordComfirmation },
+    body: { oldPassword, newPassword, newPasswordConfirmation },
   } = req;
-  const ok = await bcrypt.compare(oldPassword, password);
+  const user = await User.findById(_id);
+  const ok = await bcrypt.compare(oldPassword, user.password);
   if (!ok) {
     return res.status(400).render("users/change-password", {
       pageTitle: "Change Password",
       errorMessage: "The current password is incorrect",
     });
   }
-
-  if (newPassword !== newPasswordComfirmation) {
+  if (newPassword !== newPasswordConfirmation) {
     return res.status(400).render("users/change-password", {
       pageTitle: "Change Password",
       errorMessage: "The password does not match the confirmation",
     });
   }
-  const user = await User.findById(_id);
   user.password = newPassword;
-  user.save();
-  req.session.user.password = user.password;
-  // send notification
+  await user.save();
   return res.redirect("/users/logout");
 };
 
 export const see = async (req, res) => {
   const { id } = req.params;
-  const user = await User.findById(id).populate("videos");
-  console.log(user);
+  const user = await User.findById(id).populate({
+    path: "videos",
+    populate: {
+      path: "owner",
+      model: "User",
+    },
+  });
   if (!user) {
     return res.status(404).render("404", { pageTitle: "User not found." });
   }
