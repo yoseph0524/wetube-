@@ -1,7 +1,7 @@
 import { FFmpeg } from "@ffmpeg/ffmpeg";
 import { fetchFile } from "@ffmpeg/util";
 import { async } from "regenerator-runtime";
-const startBtn = document.getElementById("startBtn");
+const actionBtn = document.getElementById("actionBtn");
 const video = document.getElementById("preview");
 
 let stream;
@@ -9,6 +9,11 @@ let recorder;
 let videoFile;
 
 const handleDownload = async () => {
+  actionBtn.removeEventListener("click", handleDownload);
+
+  actionBtn.innerText = "Transcoding...";
+  actionBtn.disabled = true;
+
   const baseURL = "https://unpkg.com/@ffmpeg/core@0.12.2/dist/umd";
   const ffmpeg = new FFmpeg();
   ffmpeg.on("log", ({ message }) => console.log(message));
@@ -58,19 +63,23 @@ const handleDownload = async () => {
   aThumbnail.download = "My thumbnail.jpg";
   document.body.appendChild(aThumbnail);
   aThumbnail.click();
+
+  actionBtn.innerText = "Start Recording";
+  actionBtn.disabled = false;
+  actionBtn.addEventListener("click", handleStart);
 };
 
 const handleStop = () => {
-  startBtn.innerText = "Download Recording";
-  startBtn.removeEventListener("click", handleStop);
-  startBtn.addEventListener("click", handleDownload);
+  actionBtn.innerText = "Download Recording";
+  actionBtn.removeEventListener("click", handleStop);
+  actionBtn.addEventListener("click", handleDownload);
   recorder.stop();
 };
 
 const handleStart = () => {
-  startBtn.innerText = "Stop Recording";
-  startBtn.removeEventListener("click", handleStart);
-  startBtn.addEventListener("click", handleStop);
+  actionBtn.innerText = "Stop Recording";
+  actionBtn.removeEventListener("click", handleStart);
+  actionBtn.addEventListener("click", handleStop);
   recorder = new MediaRecorder(stream);
   recorder.ondataavailable = (event) => {
     videoFile = URL.createObjectURL(event.data);
@@ -80,6 +89,9 @@ const handleStart = () => {
     video.play();
   };
   recorder.start();
+  setTimeout(() => {
+    recorder.stop();
+  }, 5000);
 };
 
 const init = async () => {
@@ -93,4 +105,4 @@ const init = async () => {
 
 init();
 
-startBtn.addEventListener("click", handleStart);
+actionBtn.addEventListener("click", handleStart);
