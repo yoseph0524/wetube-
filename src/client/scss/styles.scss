@@ -32,6 +32,7 @@ body {
   color: white;
   &.relativePosition {
     position: relative;
+    height: height + 50px;
   }
 }
 
