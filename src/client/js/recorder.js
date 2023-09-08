@@ -25,14 +25,39 @@ const handleDownload = async () => {
   await ffmpeg.load({ coreURL, wasmURL });
   await ffmpeg.writeFile("recording.webm", await fetchFile(videoFile));
   await ffmpeg.exec(["-i", "recording.webm", "output.mp4"]);
+
   const mp4File = await ffmpeg.readFile("output.mp4");
   const mp4Blob = new Blob([mp4File.buffer], { type: "video/mp4" });
   const mp4Url = URL.createObjectURL(mp4Blob);
+
   const a = document.createElement("a");
   a.href = mp4Url;
   a.download = "My recording.mp4";
   document.body.appendChild(a);
   a.click();
+
+  const thumbnailFilename = "thumbnail.jpg";
+  await ffmpeg.exec([
+    "-i",
+    "recording.webm",
+    "-ss",
+    "00:00:01",
+    "-vframes",
+    "1",
+    thumbnailFilename,
+  ]);
+
+  const thumbnailFile = await ffmpeg.readFile(thumbnailFilename);
+  const thumbnailBlob = new Blob([thumbnailFile.buffer], {
+    type: "image/jpeg",
+  });
+  const thumbnailUrl = URL.createObjectURL(thumbnailBlob);
+
+  const aThumbnail = document.createElement("a");
+  aThumbnail.href = thumbnailUrl;
+  aThumbnail.download = "My thumbnail.jpg";
+  document.body.appendChild(aThumbnail);
+  aThumbnail.click();
 };
 
 const handleStop = () => {
