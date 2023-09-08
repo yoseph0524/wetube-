@@ -2,17 +2,18 @@ extends base
 
 
 block content
-    if errorMessage
-        span=errorMessage
-    form(method="POST")
-        input(placeholder="Name", name="name", type="text", required)
-        input(placeholder="Email", name="email", type="email", required)
-        input(placeholder="Username", name="username", type="text", required)
-        input(placeholder="Password", name="password", type="password", required)
-        input(placeholder="Confirm Password", name="password2", type="password", required)
-        input(placeholder="Location", name="location", type="text", required)
-        input(type="submit", value="Join")
-        include partials/social-login
+    main.joinBody
+        if errorMessage 
+            sapn=errorMessage
+        div.joinPart
+            form(method="POST").joinForm
+                input(placeholder="Name" name="name"  required type="text")
+                input(placeholder="Email" name="email"  required type="email")
+                input(placeholder="Username" name="username"  required type="text")
+                input(placeholder="Password" name="password" required type="password")
+                input(placeholder="Confirm password" name="password2" required type="password")
+                input(placeholder="Location" name="location" required type="text")
+                input(type="submit" value="Join")
     div.auth-switch
         span Already have an account? 
         a(href="/login") Log in now &rarr;
