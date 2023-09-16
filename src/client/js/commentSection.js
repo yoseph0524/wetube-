@@ -72,7 +72,7 @@ const handleDelete = async (event) => {
   }
 
   if (response.status === 403) {
-    alert("댓글 주인이 아닙니다.");
+    alert("You are not the owner");
   }
 };
 

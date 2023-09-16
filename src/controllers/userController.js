@@ -52,7 +52,7 @@ export const postLogin = async (req, res) => {
   if (!ok) {
     return res.status(400).render("login", {
       pageTitle,
-      errorMessage: "Wrong Password",
+      errorMessage: "Wrong password",
     });
   }
   req.session.loggedIn = true;
@@ -135,7 +135,6 @@ export const finishGithubLogin = async (req, res) => {
 
 export const logout = (req, res) => {
   req.session.destroy();
-  window.location.reload();
   return res.redirect("/");
 };
 export const getEdit = (req, res) => {
