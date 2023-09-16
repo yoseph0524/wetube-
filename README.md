@@ -1,4 +1,4 @@
-[# wetube-](https://wetube-yoseph-2f352b3a8266.herokuapp.com/)
+https://wetube-yoseph-2f352b3a8266.herokuapp.com/
 
 "We"tube Clone built using NodeJS, Express, Mongo and ES6
 
