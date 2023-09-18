@@ -36,10 +36,26 @@ const s3 = new S3Client({
   },
 });
 
-const upload = multerS3({
+const uploadImage = multerS3({
   s3: s3,
   bucket: "wetube--yoseph",
   acl: "public-read",
+  key: function (request, file, ab_callback) {
+    const newFileName = Date.now() + "-" + file.originalname;
+    const fullPath = "images/" + newFileName;
+    ab_callback(null, fullPath);
+  },
+});
+
+const uploadVideo = multerS3({
+  s3: s3,
+  bucket: "wetube--yoseph",
+  acl: "public-read",
+  key: function (request, file, ab_callback) {
+    const newFileName = Date.now() + "-" + file.originalname;
+    const fullPath = "videos/" + newFileName;
+    ab_callback(null, fullPath);
+  },
 });
 
 export const avatarUpload = multer({
@@ -47,12 +63,12 @@ export const avatarUpload = multer({
   limits: {
     fileSize: 3000000,
   },
-  storage: upload,
+  storage: uploadImage,
 });
 export const videoUpload = multer({
   dest: "uploads/videos/",
   limits: {
     fileSize: 10000000,
   },
-  storage: upload,
+  storage: uploadVideo,
 });
