@@ -51,6 +51,7 @@ const uploadVideo = multerS3({
   s3: s3,
   bucket: "wetube--yoseph",
   acl: "public-read",
+  contentType: multerS3.AUTO_CONTENT_TYPE,
   key: function (request, file, ab_callback) {
     const newFileName = Date.now() + "-" + file.originalname;
     const fullPath = "videos/" + newFileName;
